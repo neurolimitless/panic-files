@@ -42,7 +42,7 @@ public class FileProcessor {
             FileChannel channel = new RandomAccessFile(path, "r").getChannel();
             ByteBuffer bb = ByteBuffer.allocateDirect(1024 * 64 * 1024);
             bb.clear();
-            if (channel.size() > Integer.MAX_VALUE) throw new IOException("File is too big");
+            if (channel.size() > Integer.MAX_VALUE) throw new IOException("File is too big.");
             byte[] bytes = new byte[(int) channel.size()];
             while (channel.read(bb) > 0) {
                 bb.flip();
