@@ -1,8 +1,5 @@
 package hido.panic;
 
-import org.apache.commons.codec.binary.Hex;
-
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -21,27 +18,24 @@ public class FileProcessor {
     }
 
 
-    public void saveStructure(Structure structure, boolean encoded) {
+    public void saveStructure(Structure structure) {
         try {
             int length = structure.getData().length;
-            String hex = Hex.encodeHexString(structure.getData());
-            if (encoded) length = hex.length();
             String path = structure.getPath();
             FileChannel channel = new RandomAccessFile(path + "en", "rw").getChannel();
             ByteBuffer writeBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, length);
-            if (encoded) writeBuffer.put(hex.getBytes());
-            else writeBuffer.put(structure.getData());
+            writeBuffer.put(structure.getData());
             channel.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Structure createStructure(String path, boolean encoding) {
+    public Structure createStructure(String path) {
         try {
             Structure structure = new Structure();
             FileChannel channel = new RandomAccessFile(path, "r").getChannel();
-            ByteBuffer bb = ByteBuffer.allocateDirect(1024* 64 * 1024);
+            ByteBuffer bb = ByteBuffer.allocateDirect(1024 * 64 * 1024);
             bb.clear();
             if (channel.size() > Integer.MAX_VALUE) throw new IOException("File is too big");
             byte[] bytes = new byte[(int) channel.size()];
@@ -52,8 +46,7 @@ public class FileProcessor {
                     bb.clear();
                 }
             }
-            if (!encoding) structure.setData(DatatypeConverter.parseHexBinary(new String(bytes)));
-            else structure.setData(bytes);
+            structure.setData(bytes);
             structure.setPath(path);
             if (path.contains("\\")) structure.setName(path.substring(path.lastIndexOf("\\") + 1));
             else structure.setName(path);
@@ -73,7 +66,6 @@ public class FileProcessor {
         }
         return paths;
     }
-
 
 }
 
