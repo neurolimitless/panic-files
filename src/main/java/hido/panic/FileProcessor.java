@@ -1,5 +1,7 @@
 package hido.panic;
 
+import org.apache.commons.codec.binary.Hex;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -18,13 +20,16 @@ public class FileProcessor {
     }
 
 
-    public void saveStructure(Structure structure) {
+    public void saveStructure(Structure structure, int mode) {
         try {
-            int length = structure.getData().length;
+            byte[] data;
+            if (mode == 1) data = Hex.encodeHexString(structure.getData()).getBytes("UTF-8");
+            else data = structure.getData();
+            int length = data.length;
             String path = structure.getPath();
             FileChannel channel = new RandomAccessFile(path + "en", "rw").getChannel();
             ByteBuffer writeBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, length);
-            writeBuffer.put(structure.getData());
+            writeBuffer.put(data);
             channel.close();
         } catch (IOException e) {
             e.printStackTrace();

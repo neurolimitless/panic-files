@@ -1,0 +1,9 @@
+17.05.2016 Benchmark:
+
+Encryption (AES256):
+43 seconds for 16170 kb file.
+43s total.
+
+Decryption (AES256):
+91 seconds for 32340 kb file.
+91s total.
