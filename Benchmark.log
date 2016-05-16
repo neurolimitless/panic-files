@@ -1,0 +1,16 @@
+17.05.2016 Benchmark:
+
+Encryption (AES256):
+1699 for 271 kb file.
+2192 for 543 kb file.
+2571 for 1086 kb file.
+5139 for 2172 kb file.
+10317 for 4344 kb file.
+20838 for 8688 kb file.
+42s total.
+
+Decryption (AES256):
+2859 for 226 kb file.
+5392 for 543 kb file.
+19625 for 2172 kb file.
+28s total.
