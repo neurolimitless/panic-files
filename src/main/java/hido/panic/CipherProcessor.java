@@ -18,9 +18,10 @@ public class CipherProcessor {
             cipher.init(mode, keySpec, iv);
             return cipher.doFinal(data);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            if (e.getMessage().contains("illegal character")) System.out.println("This file isn't encrypted by AES"+key.length()*16+".");
+            return null;
         }
-        return null;
+
     }
 
 }
