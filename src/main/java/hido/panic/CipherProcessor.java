@@ -7,6 +7,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 public class CipherProcessor {
+
     public byte[] AES_CFB(String key, String initVector, byte[] data, int mode) {
         try {
             if (mode < 1 || mode > 2) throw new IllegalArgumentException("Invalid mode. 1-encryption ; 2-decryption.");
@@ -21,7 +22,6 @@ public class CipherProcessor {
             if (e.getMessage().contains("illegal character")) System.out.println("This file isn't encrypted by AES"+key.length()*16+".");
             return null;
         }
-
     }
 
 }

@@ -13,19 +13,9 @@ public class Main {
         }
         FileProcessor fileProcessor = new FileProcessor();
         List<String> paths = fileProcessor.getFilesPaths(args[3]);
-        CipherProcessor cipherProcessor = new CipherProcessor();
-        for (String path : paths) {
-            long time = System.currentTimeMillis();
-            Structure currentStructure = fileProcessor.createStructure(path);
-            System.out.println("Current file "+currentStructure.getName());
-            currentStructure.setData(cipherProcessor.AES_CFB(args[0], args[1], currentStructure.getData(), mode));
-           if (currentStructure.getData()!=null) {
-               System.out.println("Saving file");
-               fileProcessor.saveStructure(currentStructure, mode);
-               long iterationTime = System.currentTimeMillis();
-               System.out.println((iterationTime - time) / 1000 + " seconds for " + currentStructure.getData().length / 1024 + " kb file.");
-           }
-        }
-        System.out.println((System.currentTimeMillis() - startTime) / 1000 + "s. total.");
+        ThreadProcessor threadProcessor = new ThreadProcessor();
+        threadProcessor.execute(paths,mode);
+        long finishTime = System.currentTimeMillis();
+        System.out.println((finishTime-startTime)/1000 +" s.");
     }
 }

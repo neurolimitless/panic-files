@@ -13,11 +13,6 @@ import java.util.List;
 
 public class FileProcessor {
 
-    public final int CORE_COUNT;
-
-    public FileProcessor() {
-        CORE_COUNT = Runtime.getRuntime().availableProcessors(); //retrieving how much cores has processor
-    }
 
 
     public void saveStructure(Structure structure, int mode) {
@@ -55,6 +50,7 @@ public class FileProcessor {
             structure.setPath(path);
             if (path.contains("\\")) structure.setName(path.substring(path.lastIndexOf("\\") + 1));
             else structure.setName(path);
+            channel.close();
             return structure;
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,6 +67,5 @@ public class FileProcessor {
         }
         return paths;
     }
-
 }
 
