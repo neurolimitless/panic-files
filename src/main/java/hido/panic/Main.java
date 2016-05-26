@@ -44,7 +44,7 @@ public class Main {
         return !file.isDirectory() && file.exists() && file.isFile();
     }
 
-    private static CipherType parseCipherType(String cipherTypeParam) {
+    public static CipherType parseCipherType(String cipherTypeParam) {
         try {
             if (cipherTypeParam != null && !cipherTypeParam.isEmpty()) {
                 return CipherType.valueOf(cipherTypeParam);
@@ -55,7 +55,7 @@ public class Main {
         return null;
     }
 
-    private static CipherMode parseCipherMode(String cipherStringParam) {
+    public static CipherMode parseCipherMode(String cipherStringParam) {
         if (cipherStringParam != null && !cipherStringParam.isEmpty()) {
             return CipherMode.getModeByValue(Integer.parseInt(cipherStringParam));
         }
