@@ -1,4 +1,7 @@
-package hido.panic;
+package hido.panic.cipher;
+
+import hido.panic.file.FileProcessor;
+import hido.panic.file.Structure;
 
 public abstract class Cipher {
 

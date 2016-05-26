@@ -1,5 +1,6 @@
-package hido.panic;
+package hido.panic.file;
 
+import hido.panic.cipher.CipherMode;
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.IOException;
@@ -21,12 +22,14 @@ public class FileProcessor {
             byte[] data;
             if (mode == CipherMode.ENCRYPTION) data = Hex.encodeHexString(structure.getData()).getBytes("UTF-8");
             else data = structure.getData();
-            int length = data.length;
-            String path = structure.getPath();
-            FileChannel channel = new RandomAccessFile(path + "en", "rw").getChannel();
-            ByteBuffer writeBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, length);
-            writeBuffer.put(data);
-            channel.close();
+            if (data!=null) {
+                int length = data.length;
+                String path = structure.getPath();
+                FileChannel channel = new RandomAccessFile(path + "en", "rw").getChannel();
+                ByteBuffer writeBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, length);
+                writeBuffer.put(data);
+                channel.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

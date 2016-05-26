@@ -1,4 +1,4 @@
-package hido.panic;
+package hido.panic.file;
 
 public class Structure {
 

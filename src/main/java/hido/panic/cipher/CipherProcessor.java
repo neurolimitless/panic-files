@@ -1,4 +1,4 @@
-package hido.panic;
+package hido.panic.cipher;
 
 
 import javax.crypto.Cipher;
@@ -9,7 +9,6 @@ public class CipherProcessor {
 
     private CipherProcessor(){}
 
-    //TODO not convention method name!
     public static byte[] AES_CFB(String key, String initVector, byte[] data, CipherMode mode) {
         try {
             IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));

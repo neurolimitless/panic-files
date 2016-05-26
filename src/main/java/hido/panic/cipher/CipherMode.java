@@ -1,4 +1,4 @@
-package hido.panic;
+package hido.panic.cipher;
 
 
 public enum CipherMode {

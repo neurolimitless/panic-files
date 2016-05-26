@@ -1,4 +1,6 @@
-package hido.panic;
+package hido.panic.cipher;
+
+import hido.panic.file.Structure;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -16,8 +18,14 @@ public class CipherAesCfb extends Cipher {
 
     @Override
     protected byte[] decrypt(Structure structure, String key, String initVector) {
-        byte[] binary = DatatypeConverter.parseHexBinary(new String(structure.getData()));
-        return CipherProcessor.AES_CFB(key, initVector, binary, CipherMode.DECRYPTION);
+        try {
+            byte[] binary = DatatypeConverter.parseHexBinary(new String(structure.getData()));
+            return CipherProcessor.AES_CFB(key, initVector, binary, CipherMode.DECRYPTION);
+        } catch (IllegalArgumentException e){
+            System.out.println(structure.getPath()+" cannot be decrypted.");
+            return null;
+        }
+
 
     }
 }

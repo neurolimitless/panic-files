@@ -1,4 +1,6 @@
-package hido.panic;
+package hido.panic.file;
+
+import hido.panic.cipher.Cipher;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
