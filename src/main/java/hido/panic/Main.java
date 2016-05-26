@@ -9,7 +9,6 @@ import hido.panic.file.ThreadsPool;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -40,7 +39,7 @@ public class Main {
         }
     }
 
-    private static boolean readFromFile(String arg){
+    private static boolean readFromFile(String arg) {
         File file = new File(arg);
         return !file.isDirectory() && file.exists() && file.isFile();
     }

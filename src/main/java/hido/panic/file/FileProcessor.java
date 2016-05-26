@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,19 +16,19 @@ import java.util.stream.Collectors;
 
 public class FileProcessor {
 
-    private FileProcessor(){}
+    private FileProcessor() {
+    }
 
     public static void saveStructure(Structure structure, CipherMode mode) {
         try {
             byte[] data;
             if (mode == CipherMode.ENCRYPTION) data = Hex.encodeHexString(structure.getData()).getBytes("UTF-8");
             else data = structure.getData();
-            if (data!=null) {
-                int length = data.length;
+            if (data != null) {
                 String path = structure.getPath();
-                FileChannel channel = new RandomAccessFile(path + "en", "rw").getChannel();
-                ByteBuffer writeBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, length);
-                writeBuffer.put(data);
+                FileChannel channel = new FileOutputStream(path, false).getChannel();
+                ByteBuffer writeBuffer = ByteBuffer.wrap(data);
+                channel.write(writeBuffer);
                 channel.close();
             }
         } catch (IOException e) {
@@ -43,9 +44,9 @@ public class FileProcessor {
         return structure;
     }
 
-    private static byte[] readFileBytes(String path){
-        try(FileChannel channel = new RandomAccessFile(path, "r").getChannel()) {
-            ByteBuffer bb = ByteBuffer.allocateDirect(1024 * 64 * 1024);
+    private static byte[] readFileBytes(String path) {
+        try (FileChannel channel = new RandomAccessFile(path, "r").getChannel()) {
+            ByteBuffer bb = ByteBuffer.allocateDirect((int) new File(path).length());
             bb.clear();
             if (channel.size() > Integer.MAX_VALUE) throw new IOException("File is too big.");
             byte[] bytes = new byte[(int) channel.size()];
@@ -63,17 +64,19 @@ public class FileProcessor {
         return new byte[0];
     }
 
-    public static List<String> getFilesPathsFromFile(String fileName){
+    public static List<String> getFilesPathsFromFile(String fileName) {
         List<String> files = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
             String line;
             File file;
-            while(true){
+            while (true) {
                 line = reader.readLine();
-                if (line==null) break;
-                 file = new File(line);
-                if (file.exists())            files.add(line);
+                if (line == null) break;
+                file = new File(line);
+                if (file.exists() && file.isDirectory()) {
+                    files.addAll(getFilesPaths(line));
+                } else if (!file.isDirectory()) files.add(line);
                 else System.out.println(line + " doesn't exist.");
             }
             reader.close();
@@ -87,7 +90,7 @@ public class FileProcessor {
         try {
             return Files.walk(Paths.get(path))
                     .filter(Files::isRegularFile)
-                    .map(path1 -> path1.toString())
+                    .map(Path::toString)
                     .collect(Collectors.toList());
 
         } catch (IOException e) {

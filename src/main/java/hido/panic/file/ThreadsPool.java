@@ -20,6 +20,7 @@ public class ThreadsPool {
 
     public void execute(List<String> paths, Cipher cipher) {
         for (String path : paths) {
+            System.out.println(path);
             executorService.execute(() -> cipher.launch(path));
         }
     }
