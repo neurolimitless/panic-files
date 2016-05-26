@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -92,6 +93,12 @@ public class Menu extends Application {
             threadsPool.execute(paths, cipher);
             threadsPool.shutdown();
         });
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        try {
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/panic.png")));
+        } catch (Exception e) {
+            System.out.println("Can't load the icon.");
+        }
         primaryStage.show();
     }
 

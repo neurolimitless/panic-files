@@ -14,7 +14,9 @@ Arguments:
 
 * java Main abc123def456ghk7 superINITvector1 1 C:\filesToEncryption\ AES_CFB
 
-https://www.dropbox.com/s/sziba30jejx8h60/PanicFiles%200.1%20alpha.jar?dl=0
+JAR (v0.1): https://www.dropbox.com/s/sziba30jejx8h60/PanicFiles%200.1%20alpha.jar?dl=0
+JAR (v0.1b): https://www.dropbox.com/s/p0thgsmgfyzcnr8/PanicFiles%200.1b%20alpha.jar?dl=0
+EXE (v0.1b): https://www.dropbox.com/s/a26unp11u4xaj55/PanicFiles%200.1b.exe?dl=0
 
 Version with interface. Launch jar and load file list.
 
