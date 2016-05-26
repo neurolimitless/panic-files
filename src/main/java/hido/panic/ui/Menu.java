@@ -82,7 +82,7 @@ public class Menu extends Application {
             Cipher cipher = CipherFactory.factory(cipherType, keyValue, initVectorValue);
             cipher.setCipherMode(CipherMode.ENCRYPTION);
             threadsPool.execute(paths, cipher);
-            threadsPool.shutdown();
+
         });
         decryptNow.setOnAction(event -> {
             CipherType cipherType = Main.parseCipherType(algorithm.getValue());
@@ -91,9 +91,12 @@ public class Menu extends Application {
             Cipher cipher = CipherFactory.factory(cipherType, keyValue, initVectorValue);
             cipher.setCipherMode(CipherMode.DECRYPTION);
             threadsPool.execute(paths, cipher);
-            threadsPool.shutdown();
+
         });
-        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        primaryStage.setOnCloseRequest(event ->{
+            threadsPool.shutdown();
+            System.exit(0);
+        });
         try {
             primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/panic.png")));
         } catch (Exception e) {
