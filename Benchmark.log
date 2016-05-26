@@ -7,3 +7,6 @@ Encryption (AES256):
 Decryption (AES256):
 91 seconds for 32340 kb file.
 91s total.
+
+20.05.2016 Benchmark (8 threads, AMD A6-6310, 8GB RAM):
+77618 kb (262 files).

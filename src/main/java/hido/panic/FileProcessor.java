@@ -8,17 +8,18 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FileProcessor {
 
+    private FileProcessor(){}
 
-
-    public void saveStructure(Structure structure, int mode) {
+    public static void saveStructure(Structure structure, CipherMode mode) {
         try {
             byte[] data;
-            if (mode == 1) data = Hex.encodeHexString(structure.getData()).getBytes("UTF-8");
+            if (mode == CipherMode.ENCRYPTION) data = Hex.encodeHexString(structure.getData()).getBytes("UTF-8");
             else data = structure.getData();
             int length = data.length;
             String path = structure.getPath();
@@ -31,10 +32,19 @@ public class FileProcessor {
         }
     }
 
-    public Structure createStructure(String path) {
-        try {
-            Structure structure = new Structure();
-            FileChannel channel = new RandomAccessFile(path, "r").getChannel();
+    public static Structure createStructure(String path) {
+        Structure structure = new Structure();
+
+        structure.setName(Paths.get(path).getFileName().toString());
+        structure.setPath(path);
+        structure.setData(readFileBytes(path));
+
+        return structure;
+    }
+
+    private static byte[] readFileBytes(String path){
+        try(FileChannel channel = new RandomAccessFile(path, "r").getChannel()) {
+
             ByteBuffer bb = ByteBuffer.allocateDirect(1024 * 64 * 1024);
             bb.clear();
             if (channel.size() > Integer.MAX_VALUE) throw new IOException("File is too big.");
@@ -46,26 +56,24 @@ public class FileProcessor {
                     bb.clear();
                 }
             }
-            structure.setData(bytes);
-            structure.setPath(path);
-            if (path.contains("\\")) structure.setName(path.substring(path.lastIndexOf("\\") + 1));
-            else structure.setName(path);
-            channel.close();
-            return structure;
+            return bytes;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new byte[0];
     }
 
-    public List<String> getFilesPaths(String path) {
-        List<String> paths = new ArrayList<>();
+    public static List<String> getFilesPaths(String path) {
         try {
-            Files.walk(Paths.get(path)).filter(Files::isRegularFile).forEach(path1 -> paths.add(path1.toString()));
+            return Files.walk(Paths.get(path))
+                    .filter(Files::isRegularFile)
+                    .map(path1 -> path1.toString())
+                    .collect(Collectors.toList());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return paths;
+        return Collections.emptyList();
     }
 }
 
