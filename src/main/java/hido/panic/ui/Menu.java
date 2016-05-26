@@ -82,7 +82,6 @@ public class Menu extends Application {
             Cipher cipher = CipherFactory.factory(cipherType, keyValue, initVectorValue);
             cipher.setCipherMode(CipherMode.ENCRYPTION);
             threadsPool.execute(paths, cipher);
-
         });
         decryptNow.setOnAction(event -> {
             CipherType cipherType = Main.parseCipherType(algorithm.getValue());
@@ -91,7 +90,6 @@ public class Menu extends Application {
             Cipher cipher = CipherFactory.factory(cipherType, keyValue, initVectorValue);
             cipher.setCipherMode(CipherMode.DECRYPTION);
             threadsPool.execute(paths, cipher);
-
         });
         primaryStage.setOnCloseRequest(event ->{
             threadsPool.shutdown();
