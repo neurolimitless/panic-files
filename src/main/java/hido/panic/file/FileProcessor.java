@@ -37,11 +37,9 @@ public class FileProcessor {
 
     public static Structure createStructure(String path) {
         Structure structure = new Structure();
-
         structure.setName(Paths.get(path).getFileName().toString());
         structure.setPath(path);
         structure.setData(readFileBytes(path));
-
         return structure;
     }
 

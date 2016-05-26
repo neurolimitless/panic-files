@@ -50,7 +50,7 @@ public class Main {
         if (cipherStringParam != null && !cipherStringParam.isEmpty()) {
             return CipherMode.getModeByValue(Integer.parseInt(cipherStringParam));
         }
-        return CipherMode.DECRYPTION;// return default
+        return CipherMode.DECRYPTION; //default value
     }
 
     private static void checkParams(String[] args) {

@@ -21,6 +21,6 @@ public enum CipherMode {
                 return cipherMode;
             }
         }
-        throw new IllegalArgumentException(String.format("%s is not correspond any mode", value));
+        throw new IllegalArgumentException(String.format("%s is not correspond any mode.", value));
     }
 }

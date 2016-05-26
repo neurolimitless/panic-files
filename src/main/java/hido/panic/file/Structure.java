@@ -7,7 +7,6 @@ public class Structure {
     private byte[] data;
 
     public Structure() {
-
     }
 
     public String toString(){

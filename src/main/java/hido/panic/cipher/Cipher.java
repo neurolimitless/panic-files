@@ -19,7 +19,7 @@ public abstract class Cipher {
         structure.setData(getNewStructureData(structure, cipherMode));
         System.out.println(structure.getPath() + " " + cipherMode);
         FileProcessor.saveStructure(structure, cipherMode);
-        System.out.println(file + " finished.");
+        System.out.println(file + " is finished.");
     }
 
     private byte[] getNewStructureData(Structure structure, CipherMode mode) {
