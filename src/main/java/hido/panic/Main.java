@@ -16,8 +16,6 @@ public class Main {
 
     public static void main(String[] args) throws UnsupportedEncodingException {
 
-        args = new String[]{"someKeysomeKey16", "someKeysomeKey16", "2", "C:/jack/list.txt", "AES_CFB"};
-
         checkParams(args);
 
         CipherType cipherType = parseCipherType(args[4]);
