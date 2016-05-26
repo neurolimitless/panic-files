@@ -7,14 +7,17 @@ import hido.panic.cipher.CipherType;
 import hido.panic.file.FileProcessor;
 import hido.panic.file.ThreadsPool;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
 
     public static void main(String[] args) throws UnsupportedEncodingException {
 
-        args = new String[]{"someKeysomeKey16", "someKeysomeKey16", "2", "C:/jack/", "AES_CFB"};
+        args = new String[]{"someKeysomeKey16", "someKeysomeKey16", "2", "C:/jack/list.txt", "AES_CFB"};
 
         checkParams(args);
 
@@ -26,13 +29,20 @@ public class Main {
             Cipher cipher = CipherFactory.factory(cipherType, key, initVector);
             cipher.setCipherMode(parseCipherMode(args[2]));
             ThreadsPool threadsPool = new ThreadsPool();
+            List<String> fileList;
+            if (readFromFile(args[3])) fileList = FileProcessor.getFilesPathsFromFile(args[3]);
+            else fileList = FileProcessor.getFilesPaths(args[3]);
             threadsPool.execute(
-                    //TODO what are params args[0] and args[1]?
-                    FileProcessor.getFilesPaths(args[3]),
+                    fileList,
                     cipher
             );
             threadsPool.shutdown();
         }
+    }
+
+    private static boolean readFromFile(String arg){
+        File file = new File(arg);
+        return !file.isDirectory() && file.exists() && file.isFile();
     }
 
     private static CipherType parseCipherType(String cipherTypeParam) {
