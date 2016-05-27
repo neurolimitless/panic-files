@@ -18,7 +18,7 @@ public class Main {
 
         checkParams(args);
 
-        CipherType cipherType = parseCipherType(args[4]);
+        CipherType cipherType = CipherType.parseCipherType(args[4]);
         if (cipherType != null) {
             //TODO this data should be received from user
             String key = args[0];
@@ -40,17 +40,6 @@ public class Main {
     private static boolean readFromFile(String arg) {
         File file = new File(arg);
         return !file.isDirectory() && file.exists() && file.isFile();
-    }
-
-    public static CipherType parseCipherType(String cipherTypeParam) {
-        try {
-            if (cipherTypeParam != null && !cipherTypeParam.isEmpty()) {
-                return CipherType.valueOf(cipherTypeParam);
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Wrong cipher algorithm.");
-        }
-        return null;
     }
 
     public static CipherMode parseCipherMode(String cipherStringParam) {
