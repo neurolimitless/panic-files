@@ -6,6 +6,7 @@ import hido.panic.cipher.CipherMode;
 import hido.panic.cipher.CipherType;
 import hido.panic.file.FileProcessor;
 import hido.panic.file.ThreadsPool;
+import hido.panic.ui.console.UiConsole;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -16,9 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.List;
 
 
@@ -34,7 +32,6 @@ public class CipherMainPaneWrapper {
     private TextField keyField;
     private TextField initVectorField;
     private TextArea filesTextArea;
-    private TextArea consoleTextArea;
     private ComboBox<String> algorithmsBox;
 
     private Button encryptNowButton;
@@ -86,7 +83,7 @@ public class CipherMainPaneWrapper {
 
         clearLogAreaButton = new Button("Clear");
         clearLogAreaButton.setOnAction(event -> {
-            consoleTextArea.setText("");
+            UiConsole.clearConsole();
         });
 
         loadListButton = new Button("Load list");
@@ -97,27 +94,6 @@ public class CipherMainPaneWrapper {
                 filesTextArea.setText(getFilesWithSizes(paths));
             }
         });
-        consoleTextArea = new TextArea("");
-        consoleTextArea.setWrapText(true);
-        //Console -> UI TextArea Log Redirect
-        OutputStream outputStream = new OutputStream() {
-            StringBuilder builder = new StringBuilder();
-
-            @Override
-            public void write(int b) throws IOException {
-                if ((char) b != '\n') builder.append((char) b);
-                else {
-                    appendToConsole(builder.toString() + "\n");
-                    builder.setLength(0);
-                }
-            }
-        };
-
-        System.setOut(new PrintStream(outputStream, true)); //Comment this to write logs in console
-    }
-
-    private void appendToConsole(String s) {
-        consoleTextArea.setText(consoleTextArea.getText() + s);
     }
 
     private void initMainPane() {
@@ -137,7 +113,8 @@ public class CipherMainPaneWrapper {
         flowPane.getChildren().add(hideToTrayButton);
         flowPane.getChildren().add(clearLogAreaButton);
         flowPane.getChildren().add(settingsButton);
-        flowPane.getChildren().add(consoleTextArea);
+        flowPane.getChildren().add(UiConsole.getConsole());
+
     }
 
     private Cipher createCipher(String keyValue, String initVectorValue, String cipherTypeValue, CipherMode cipherMode) {

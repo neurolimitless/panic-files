@@ -7,6 +7,11 @@
         <File name="File" fileName="output.log">
             <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg %n"/>
         </File>
+
+        <UiConsoleAppender name="ui_console">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg %n"/>
+
+        </UiConsoleAppender>
     </Appenders>
     <Loggers>
         <Logger name="Exception logger" level="warn">
@@ -14,6 +19,7 @@
         </Logger>
         <Logger name="Cipher logger" level="info">
             <AppenderRef ref="File"/>
+            <AppenderRef ref="ui_console"/>
         </Logger>
         <Root level="trace">
             <AppenderRef ref="Console"/>
