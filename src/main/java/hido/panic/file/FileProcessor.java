@@ -72,23 +72,27 @@ public class FileProcessor {
 
     public static List<String> getFilesPathsFromFile(String fileName) {
         List<String> files = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
+        try(
+                FileReader fileReader = new FileReader(new File(fileName));
+                BufferedReader bufferedReader = new BufferedReader(fileReader)
+        ) {
+
             String line;
-            File file;
-            while (true) {
-                line = reader.readLine();
-                if (line == null) break;
-                file = new File(line);
+            while ((line = bufferedReader.readLine()) != null) {
+                File file = new File(line);
+
                 if (file.exists() && file.isDirectory()) {
                     files.addAll(getFilesPaths(line));
-                } else if (!file.isDirectory()) files.add(line);
-                else System.out.println(line + " doesn't exist.");
+                } else if (!file.isDirectory()){
+                    files.add(line);
+                } else {
+                    log.error(String.format("File '%s' doesn't exist.", line));
+                }
             }
-            reader.close();
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
+
         return files;
     }
 
