@@ -132,6 +132,7 @@ public class CipherMainPaneWrapper {
                 algorithmsBox.getValue(),
                 cipherMode
         );
+        if (paths!=null)
         threadsPool.execute(paths, cipher);
     }
 
