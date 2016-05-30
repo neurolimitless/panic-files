@@ -20,7 +20,6 @@ public class Main {
 
         CipherType cipherType = CipherType.parseCipherType(args[4]);
         if (cipherType != null) {
-            //TODO this data should be received from user
             String key = args[0];
             String initVector = args[1];
             Cipher cipher = CipherFactory.factory(cipherType, key, initVector);

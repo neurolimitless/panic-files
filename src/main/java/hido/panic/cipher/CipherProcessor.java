@@ -1,12 +1,17 @@
 package hido.panic.cipher;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 
 public class CipherProcessor {
+
+    private static final Logger log = LogManager.getLogger("Cipher logger");
 
     private CipherProcessor() {
     }
@@ -21,9 +26,9 @@ public class CipherProcessor {
             cipher.init(mode.getValue(), keySpec, iv);
             return cipher.doFinal(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
             if (e.getMessage().contains("illegal character"))
-                System.out.println("This file isn't encrypted by AES " + key.length() * 16 + ".");
+                log.warn("This file isn't encrypted by AES " + key.length() * 16 + ".");
             System.exit(-1);
             return null;
         }

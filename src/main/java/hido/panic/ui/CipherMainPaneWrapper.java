@@ -12,14 +12,19 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.FileChooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
-/**
- * Created by sgnatiuk on 5/27/16.
- */
+
 public class CipherMainPaneWrapper {
+
+    private static final Logger log = LogManager.getLogger("Cipher logger");
 
     private ThreadsPool threadsPool;
     private List<String> paths;
@@ -29,6 +34,7 @@ public class CipherMainPaneWrapper {
     private TextField keyField;
     private TextField initVectorField;
     private TextArea filesTextArea;
+    private TextArea consoleTextArea;
     private ComboBox<String> algorithmsBox;
 
     private Button encryptNowButton;
@@ -37,14 +43,15 @@ public class CipherMainPaneWrapper {
     private Button createScriptButton;
     private Button hideToTrayButton;
     private Button loadListButton;
+    private Button clearLogAreaButton;
 
 
-    public CipherMainPaneWrapper(){
+    public CipherMainPaneWrapper() {
         initNodes();
         initMainPane();
     }
 
-    private void initNodes(){
+    private void initNodes() {
         keyField = new TextField("Key");
         initVectorField = new TextField("Init Vector");
 
@@ -77,18 +84,43 @@ public class CipherMainPaneWrapper {
         hideToTrayButton = new Button("Hide to tray");
         hideToTrayButton.setDisable(true);
 
+        clearLogAreaButton = new Button("Clear");
+        clearLogAreaButton.setOnAction(event -> {
+            consoleTextArea.setText("");
+        });
 
         loadListButton = new Button("Load list");
         loadListButton.setOnAction(event -> {
-            paths = getPathsFromFile(buildFileChooser().showOpenDialog(null));
-            filesTextArea.setText(getFilesWithSizes(paths));
-            for (String path : paths) {
-                System.out.println(path);
+            File list = buildFileChooser().showOpenDialog(null);
+            if (list != null) {
+                paths = getPathsFromFile(list);
+                filesTextArea.setText(getFilesWithSizes(paths));
             }
         });
+        consoleTextArea = new TextArea("");
+        consoleTextArea.setWrapText(true);
+        //Console -> UI TextArea Log Redirect
+        OutputStream outputStream = new OutputStream() {
+            StringBuilder builder = new StringBuilder();
+
+            @Override
+            public void write(int b) throws IOException {
+                if ((char) b != '\n') builder.append((char) b);
+                else {
+                    appendToConsole(builder.toString() + "\n");
+                    builder.setLength(0);
+                }
+            }
+        };
+
+        System.setOut(new PrintStream(outputStream, true)); //Comment this to write logs in console
     }
 
-    private void initMainPane(){
+    private void appendToConsole(String s) {
+        consoleTextArea.setText(consoleTextArea.getText() + s);
+    }
+
+    private void initMainPane() {
         flowPane = new FlowPane();
 
         flowPane.getChildren().add(keyField);
@@ -103,28 +135,31 @@ public class CipherMainPaneWrapper {
 
         flowPane.getChildren().add(createScriptButton);
         flowPane.getChildren().add(hideToTrayButton);
+        flowPane.getChildren().add(clearLogAreaButton);
         flowPane.getChildren().add(settingsButton);
+        flowPane.getChildren().add(consoleTextArea);
     }
 
-    private Cipher createCipher(String keyValue, String initVectorValue, String cipherTypeValue, CipherMode cipherMode){
+    private Cipher createCipher(String keyValue, String initVectorValue, String cipherTypeValue, CipherMode cipherMode) {
         CipherType cipherType = CipherType.parseCipherType(cipherTypeValue);
         Cipher cipher = CipherFactory.factory(cipherType, keyValue, initVectorValue);
         cipher.setCipherMode(cipherMode);
+        log.info("Cipher created: " + keyValue + ":" + initVectorValue + " > " + cipherTypeValue + " in " + cipherMode);
         return cipher;
     }
 
     private void launchCipher(CipherMode cipherMode) {
         Cipher cipher = createCipher(
-                initVectorField.getText(),
+                keyField.getText(),
                 initVectorField.getText(),
                 algorithmsBox.getValue(),
                 cipherMode
         );
-
         threadsPool.execute(paths, cipher);
     }
 
-    private FileChooser buildFileChooser(){
+
+    private FileChooser buildFileChooser() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select list");
         fileChooser.setInitialDirectory(new File("/"));

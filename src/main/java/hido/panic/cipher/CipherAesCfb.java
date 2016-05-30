@@ -22,10 +22,8 @@ public class CipherAesCfb extends Cipher {
             byte[] binary = DatatypeConverter.parseHexBinary(new String(structure.getData()));
             return CipherProcessor.AES_CFB(key, initVector, binary, CipherMode.DECRYPTION);
         } catch (IllegalArgumentException e){
-            System.out.println(structure.getPath()+" cannot be decrypted. (NOT ENCRYPTED)");
+            log.warn(structure.getName()+ " cannot be decrypted.");
             return null;
         }
-
-
     }
 }

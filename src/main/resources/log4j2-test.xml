@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg %n"/>
+        </Console>
+        <File name="File" fileName="output.log">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg %n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="Exception logger" level="warn">
+            <AppenderRef ref="File"/>
+        </Logger>
+        <Logger name="Cipher logger" level="info">
+            <AppenderRef ref="File"/>
+        </Logger>
+        <Root level="trace">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

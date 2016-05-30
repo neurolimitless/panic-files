@@ -2,9 +2,12 @@ package hido.panic.cipher;
 
 import hido.panic.file.FileProcessor;
 import hido.panic.file.Structure;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Cipher {
 
+    protected static final Logger log = LogManager.getLogger("Cipher logger");
     private String key;
     private String initVector;
     private CipherMode cipherMode;
@@ -17,9 +20,8 @@ public abstract class Cipher {
     public void launch(String file) {
         Structure structure = FileProcessor.createStructure(file);
         structure.setData(getNewStructureData(structure, cipherMode));
-        System.out.println(structure.getPath() + " " + cipherMode);
-        FileProcessor.saveStructure(structure, cipherMode);
-        System.out.println(file + " is finished.");
+        if (FileProcessor.saveStructure(structure, cipherMode)) log.info(file + " " + cipherMode + " is finished.");
+        else log.info(file + " " + cipherMode + " wasn't finished.");
     }
 
     private byte[] getNewStructureData(Structure structure, CipherMode mode) {

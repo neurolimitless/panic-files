@@ -2,6 +2,8 @@ package hido.panic.file;
 
 import hido.panic.cipher.CipherMode;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -16,24 +18,28 @@ import java.util.stream.Collectors;
 
 public class FileProcessor {
 
+    private static final Logger log = LogManager.getLogger("Exception logger");
+
     private FileProcessor() {
     }
 
-    public static void saveStructure(Structure structure, CipherMode mode) {
+    public static boolean saveStructure(Structure structure, CipherMode mode) {
         try {
             byte[] data;
             if (mode == CipherMode.ENCRYPTION) data = Hex.encodeHexString(structure.getData()).getBytes("UTF-8");
             else data = structure.getData();
-            if (data != null) {
+            if (data != null && data.length!=0) {
                 String path = structure.getPath();
                 FileChannel channel = new FileOutputStream(path, false).getChannel();
                 ByteBuffer writeBuffer = ByteBuffer.wrap(data);
                 channel.write(writeBuffer);
                 channel.close();
+                return true;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("File saving exception: "+e.getMessage());
         }
+        return false;
     }
 
     public static Structure createStructure(String path) {
@@ -59,7 +65,7 @@ public class FileProcessor {
             }
             return bytes;
         } catch (IOException e) {
-            e.printStackTrace();
+           log.error("File reading exception: "+e.getMessage());
         }
         return new byte[0];
     }
@@ -81,7 +87,7 @@ public class FileProcessor {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
         return files;
     }
@@ -92,9 +98,8 @@ public class FileProcessor {
                     .filter(Files::isRegularFile)
                     .map(Path::toString)
                     .collect(Collectors.toList());
-
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return Collections.emptyList();
     }
