@@ -16,5 +16,6 @@ For launch compile sources or install via Maven and execute Main with next args:
 **java Main abc123def456ghk7 superINITvector1 1 C:\filesToEncryption\ AES_CFB**
 
 ###Download GUI version:
-* [Jar v0.1c](https://www.dropbox.com/s/9heolfjygj399pb/PanicFiles%200.1c%20alpha.jar?dl=0)
-* [Exe v0.1c](https://www.dropbox.com/s/n3m7c2k628al5sd/PanicFiles%200.1c.exe?dl=0)
+* [Jar v0.1e](https://www.dropbox.com/s/lm4c51zdka5ykt4/PanicFiles%200.1e.jar?dl=0)
+* [Exe v0.1e](https://www.dropbox.com/s/qycjcfq3w04g5ak/PanicFiles%200.1e.exe?dl=0)
+

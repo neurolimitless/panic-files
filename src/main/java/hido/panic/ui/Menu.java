@@ -18,7 +18,7 @@ public class Menu extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         log.info("Application started.");
-        primaryStage.setTitle("PanicFiles v0.1d");
+        primaryStage.setTitle("PanicFiles v0.1e");
         primaryStage.setHeight(HEIGHT);
         primaryStage.setWidth(WIDTH);
 
