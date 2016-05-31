@@ -22,7 +22,7 @@ public class CipherAesCfb extends Cipher {
             byte[] binary = DatatypeConverter.parseHexBinary(new String(structure.getData()));
             return CipherProcessor.AES_CFB(key, initVector, binary, CipherMode.DECRYPTION);
         } catch (IllegalArgumentException e){
-            log.warn(structure.getName()+ " cannot be decrypted.");
+            log.error(String.format("'%s' cannot be decrypted.",structure.getName()), e);
             return null;
         }
     }

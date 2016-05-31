@@ -2,44 +2,79 @@ import hido.panic.cipher.Cipher;
 import hido.panic.cipher.CipherFactory;
 import hido.panic.cipher.CipherMode;
 import hido.panic.cipher.CipherType;
+import hido.panic.file.FileUtilsIO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class EncryptionTest {
 
-    File testFile;
-    String filename = "testfile.dat";
+    private String fileName = "testfile.dat";
+    private File testFile = new File(fileName);
+    private List<String> fileDataToEncrypt = Arrays.asList(
+            "Simple string to encrypt 1",
+            "Simple string to encrypt 2"
+    );
+
+    private String key = "Key";
+    private String initVector = "InitVector";
+
+    private Cipher cipher;
 
     @Before
     public void createTestFile() throws IOException {
-        testFile = new File(filename);
-        String data = "Simple string to encrypt";
-        FileWriter fileWriter = new FileWriter(testFile);
-        fileWriter.write(data);
-        fileWriter.close();
+
+        cipher = CipherFactory.factory(CipherType.AES_CFB, key, initVector);
+
+        //create file to test
+        FileUtilsIO.writeToFile(testFile, fileDataToEncrypt, true);
     }
 
     @Test
-    public void testEncryption(){
-        String key = "Key";
-        String initVector = "InitVector";
-        Cipher cipher = CipherFactory.factory(CipherType.AES_CFB, key, initVector);
-        cipher.setCipherMode(CipherMode.ENCRYPTION);
-        cipher.launch(filename);
+    public void testEncryption() throws IOException {
+        //encrypt file and read encrypted file
+        encryptFile(fileName);
+        List<String> dataFromEncryptedFile = FileUtilsIO.readFile(testFile);
+
+        //verify that data is encrypted
+        assertNotEquals(fileDataToEncrypt, dataFromEncryptedFile);
+        System.out.println(fileDataToEncrypt);
+        System.out.println(dataFromEncryptedFile);
+    }
+
+    @Test
+    public void testDecryption() throws IOException {
+        //restore file and read decrypted data
+        decryptFile(fileName);
+        List<String> dataFromDecryptedFile = FileUtilsIO.readFile(testFile);
+
+        //verify that data is restored successfully
+        assertEquals(fileDataToEncrypt, dataFromDecryptedFile);
+        System.out.println(fileDataToEncrypt);
+        System.out.println(dataFromDecryptedFile);
     }
 
     @After
     public void checkResults() throws IOException{
-        String result = "91295adf365801075d430f71851da1da498d9b8c47cde17e";
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(testFile));
-        String encryptionResult = bufferedReader.readLine();
-        assertTrue(result.equals(encryptionResult));
-        bufferedReader.close();
-        testFile.delete();
+        //delete test file
+//        testFile.delete();
+    }
+
+    private void encryptFile(String filename){
+        cipher.setCipherMode(CipherMode.ENCRYPTION);
+        cipher.launch(filename);
+    }
+
+    private void decryptFile(String filename){
+        cipher.setCipherMode(CipherMode.DECRYPTION);
+        cipher.launch(filename);
     }
 }
