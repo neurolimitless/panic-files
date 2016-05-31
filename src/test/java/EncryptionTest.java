@@ -46,8 +46,6 @@ public class EncryptionTest {
 
         //verify that data is encrypted
         assertNotEquals(fileDataToEncrypt, dataFromEncryptedFile);
-        System.out.println(fileDataToEncrypt);
-        System.out.println(dataFromEncryptedFile);
     }
 
     @Test
@@ -58,8 +56,6 @@ public class EncryptionTest {
 
         //verify that data is restored successfully
         assertEquals(fileDataToEncrypt, dataFromDecryptedFile);
-        System.out.println(fileDataToEncrypt);
-        System.out.println(dataFromDecryptedFile);
     }
 
     @After
