@@ -65,7 +65,7 @@ public class EncryptionTest {
     @After
     public void checkResults() throws IOException{
         //delete test file
-//        testFile.delete();
+        testFile.delete();
     }
 
     private void encryptFile(String filename){
