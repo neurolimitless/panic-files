@@ -19,11 +19,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-/**
- * Created by sgnatiuk on 5/30/16.
- */
-
-@Plugin(name="UiConsoleAppender", category="Core", elementType="appender", printObject=true)
+@Plugin(name = "UiConsoleAppender", category = "Core", elementType = "appender", printObject = true)
 public final class UiConsole extends AbstractAppender {
 
     private static volatile TextArea consoleTextArea;
@@ -36,15 +32,9 @@ public final class UiConsole extends AbstractAppender {
         super(name, filter, layout, ignoreExceptions);
     }
 
-    // The append method is where the appender does the work.
-    // Given a log event, you are free to do with it what you want.
-    // This example demonstrates:
-    // 1. Concurrency: this method may be called by multiple threads concurrently
-    // 2. How to use layouts
-    // 3. Error handling
     @Override
     public void append(LogEvent event) {
-        if(consoleTextArea == null){
+        if (consoleTextArea == null) {
             return;
         }
         readLock.lock();
@@ -59,10 +49,6 @@ public final class UiConsole extends AbstractAppender {
         }
     }
 
-    // Your custom appender needs to declare a factory method
-    // annotated with `@PluginFactory`. Log4j will parse the configuration
-    // and call this factory method to construct an appender instance with
-    // the configured attributes.
     @PluginFactory
     public static UiConsole createAppender(
             @PluginAttribute("name") String name,
@@ -79,21 +65,21 @@ public final class UiConsole extends AbstractAppender {
         return new UiConsole(name, filter, layout, true);
     }
 
-    private void appendToConsole(String line){
-        synchronized (consoleTextArea){
+    private void appendToConsole(String line) {
+        synchronized (consoleTextArea) {
             consoleTextArea.appendText(line);
         }
     }
 
-    public static void clearConsole(){
-        if(consoleTextArea != null){
-            synchronized (consoleTextArea){
+    public static void clearConsole() {
+        if (consoleTextArea != null) {
+            synchronized (consoleTextArea) {
                 consoleTextArea.clear();
             }
         }
     }
 
-    public static Node getConsole(){
+    public static Node getConsole() {
         return getInstance();
     }
 
