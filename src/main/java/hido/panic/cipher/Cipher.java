@@ -5,6 +5,8 @@ import hido.panic.file.Structure;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+
 public abstract class Cipher {
 
     protected static final Logger log = LogManager.getLogger("Cipher logger");
@@ -17,7 +19,7 @@ public abstract class Cipher {
         this.initVector = initVector;
     }
 
-    public void launch(String file) {
+    public void launch(File file) {
         Structure structure = FileProcessor.createStructure(file);
         structure.setData(getNewStructureData(structure, cipherMode));
         if (FileProcessor.saveStructure(structure, cipherMode)) log.info(file + " " + cipherMode + " is finished.");

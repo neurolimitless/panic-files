@@ -41,7 +41,7 @@ public class EncryptionTest {
     @Test
     public void testEncryption() throws IOException {
         //encrypt file and read encrypted file
-        encryptFile(fileName);
+        encryptFile(testFile);
         List<String> dataFromEncryptedFile = FileUtilsIO.readFile(testFile);
 
         //verify that data is encrypted
@@ -51,7 +51,7 @@ public class EncryptionTest {
     @Test
     public void testDecryption() throws IOException {
         //restore file and read decrypted data
-        decryptFile(fileName);
+        decryptFile(testFile);
         List<String> dataFromDecryptedFile = FileUtilsIO.readFile(testFile);
 
         //verify that data is restored successfully
@@ -64,13 +64,13 @@ public class EncryptionTest {
         testFile.delete();
     }
 
-    private void encryptFile(String filename){
+    private void encryptFile(File file){
         cipher.setCipherMode(CipherMode.ENCRYPTION);
-        cipher.launch(filename);
+        cipher.launch(file);
     }
 
-    private void decryptFile(String filename){
+    private void decryptFile(File file){
         cipher.setCipherMode(CipherMode.DECRYPTION);
-        cipher.launch(filename);
+        cipher.launch(file);
     }
 }

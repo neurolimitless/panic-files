@@ -5,10 +5,16 @@ import hido.panic.cipher.CipherFactory;
 import hido.panic.cipher.CipherMode;
 import hido.panic.cipher.CipherType;
 import hido.panic.file.FileProcessor;
-import hido.panic.file.ThreadsPool;
+import hido.panic.threads.listeners.WorkCompleteListener;
+import hido.panic.threads.runnable.CipherExecutor;
+import hido.panic.threads.runnable.CipherRunnable;
+import hido.panic.threads.runnable.HierarchyWalker;
+import hido.panic.threads.runnable.ThreadPool;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -24,15 +30,24 @@ public class Main {
             String initVector = args[1];
             Cipher cipher = CipherFactory.factory(cipherType, key, initVector);
             cipher.setCipherMode(parseCipherMode(args[2]));
-            ThreadsPool threadsPool = new ThreadsPool();
             List<String> fileList;
-            if (readFromFile(args[3])) fileList = FileProcessor.getFilesPathsFromFile(args[3]);
-            else fileList = FileProcessor.getFilesPaths(args[3]);
-            threadsPool.execute(
-                    fileList,
-                    cipher
-            );
-            threadsPool.shutdown();
+
+            List<CipherRunnable> cipherRunnables = new ArrayList<>();
+            if (readFromFile(args[3])){
+                fileList = FileProcessor.getFilesPathsFromFile(args[3]);
+                for (String file : fileList) {
+                    cipherRunnables.add(new CipherExecutor(cipher, new File(file)));
+                }
+            } else{
+                cipherRunnables.add(new HierarchyWalker(Arrays.asList(args[3]), cipher));
+            }
+            ThreadPool.getInstance().registerThreads(cipherRunnables);
+            ThreadPool.getInstance().registerWorkCompleteListener(new WorkCompleteListener() {
+                @Override
+                public void actionPerformed() {
+                    ThreadPool.getInstance().shutdown();
+                }
+            });
         }
     }
 

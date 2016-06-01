@@ -5,12 +5,12 @@ import hido.panic.cipher.CipherFactory;
 import hido.panic.cipher.CipherMode;
 import hido.panic.cipher.CipherType;
 import hido.panic.file.FileProcessor;
-import hido.panic.file.ThreadsPool;
+import hido.panic.threads.listeners.WorkCompleteListener;
+import hido.panic.threads.runnable.CipherExecutor;
+import hido.panic.threads.runnable.ThreadPool;
 import hido.panic.ui.console.UiConsole;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.application.Platform;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +24,7 @@ public class CipherMainPaneWrapper {
 
     private static final Logger log = LogManager.getLogger("Cipher logger");
 
-    private ThreadsPool threadsPool;
+
     private List<String> paths;
 
     private FlowPane flowPane;
@@ -59,8 +59,6 @@ public class CipherMainPaneWrapper {
         algorithmsBox = new ComboBox<>();
         algorithmsBox.setValue("AES_CFB");
         algorithmsBox.getItems().add("AES_CFB");
-
-        threadsPool = new ThreadsPool();
 
         encryptNowButton = new Button("Encrypt now");
         encryptNowButton.setOnAction(event -> {
@@ -132,8 +130,29 @@ public class CipherMainPaneWrapper {
                 algorithmsBox.getValue(),
                 cipherMode
         );
-        if (paths!=null)
-        threadsPool.execute(paths, cipher);
+        decryptNowButton.setDisable(true);
+        encryptNowButton.setDisable(true);
+        if (paths!=null){
+            ThreadPool.getInstance().registerWorkCompleteListener(new WorkCompleteListener() {
+                @Override
+                public void actionPerformed() {
+                    Platform.runLater(() -> {
+                        decryptNowButton.setDisable(false);
+                        encryptNowButton.setDisable(false);
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setGraphic(new Label("Done!"));
+                        alert.show();
+
+                    });
+                }
+            });
+            if(ThreadPool.getInstance().getControllerState() != ThreadPool.ControllerState.STARTED){
+                ThreadPool.getInstance().start();
+            }
+            for (String path : paths) {
+                ThreadPool.getInstance().registerThread(new CipherExecutor(cipher, new File(path)));
+            }
+        }
     }
 
 

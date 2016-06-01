@@ -42,17 +42,17 @@ public class FileProcessor {
         return false;
     }
 
-    public static Structure createStructure(String path) {
+    public static Structure createStructure(File file) {
         Structure structure = new Structure();
-        structure.setName(Paths.get(path).getFileName().toString());
-        structure.setPath(path);
-        structure.setData(readFileBytes(path));
+        structure.setName(file.getName());
+        structure.setPath(file.getAbsolutePath());
+        structure.setData(readFileBytes(file));
         return structure;
     }
 
-    private static byte[] readFileBytes(String path) {
-        try (FileChannel channel = new RandomAccessFile(path, "r").getChannel()) {
-            ByteBuffer bb = ByteBuffer.allocateDirect((int) new File(path).length());
+    private static byte[] readFileBytes(File file) {
+        try (FileChannel channel = new RandomAccessFile(file, "r").getChannel()) {
+            ByteBuffer bb = ByteBuffer.allocateDirect((int) file.length());
             bb.clear();
             if (channel.size() > Integer.MAX_VALUE) throw new IOException("File is too big.");
             byte[] bytes = new byte[(int) channel.size()];
