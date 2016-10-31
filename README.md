@@ -2,7 +2,7 @@
 ####Application for file encryption.
 
 
-Currently only AES_CFB implemented.
+Currently supports AES_CFB, AES_STR modes.
 For launch compile sources or install via Maven and execute Main with next args:
 - java Main key initVector mode path cipher
 
@@ -11,7 +11,7 @@ For launch compile sources or install via Maven and execute Main with next args:
 * initVector - must be 16 char (any string)
 * mode - 1 for encryption \ 2 for decryption
 * path - path to directory
-* cipher - AES_CFB
+* cipher - AES_CFB, AES_STR
 
 **java Main abc123def456ghk7 superINITvector1 1 C:\filesToEncryption\ AES_CFB**
 
